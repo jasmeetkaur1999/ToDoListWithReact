@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+
+    <title>Hello React!</title>
+    <link rel="stylesheet"  href="index.css">
+    <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6.26.0/babel.js"></script>
+  </head>
+  
+  <body>
+  <div id="root"></div>
+  <script type="text/babel">
+  class App extends React.Component {
+  state = {
+    toDo: "",
+    toDoList: "",
+  }
+
+  render() {
+    return (
+      <div className="App">
+        <TodoList/>
+      </div>
+    )
+  }
+}
+
+class TodoList extends React.Component {
+  state = {
+    name: "",
+    incompletedTodo: [],
+    completedTodo: []
+  }
+  
+  inputTodo = (value) => {
+    this.setState({
+      name: value
+    })
+  }
+  
+  submit = (event) => {
+    event.preventDefault();
+    if(this.state.name !== ""){
+      this.setState((prevState) => ({
+        name: "",
+        incompletedTodo: [
+          {name: prevState.name}, ...prevState.incompletedTodo,
+        ]
+      }))
+    }
+  }
+  
+  completingTodo = (name) => {
+    this.setState((prevState) => ({
+      completedTodo: [{name: name}, ...prevState.completedTodo],
+      incompletedTodo: prevState.incompletedTodo.filter((todo) => {
+        return todo.name !== name;
+      }),
+    })
+    )
+  }
+    
+  removeName = (name) => {
+    this.setState((previousState) => ({
+      incompletedTodo: previousState.incompletedTodo.filter((todo) => {
+        return todo.name !== name;
+      }),
+      completedTodo: previousState.completedTodo.filter((todo) => {
+        return todo.name !== name;
+      })
+    }))
+  }
+    
+  render() {
+    return (
+    <div className="todoList">
+      <Todo inputTodo = {this.inputTodo}
+      submit = {this.submit}
+      name={this.state.name}/>
+      <h2>Incomplete To-do-List</h2>
+      {this.state.incompletedTodo.map((todolist) => (
+      <div>
+      {(todolist.name)}
+      <button className = "doneButton" onClick = {() =>
+        this.completingTodo(todolist.name)}>Done</button>
+      <button className="notDoneButton" onClick = {() =>
+        this.deletedName(todolist.name)}>Not Done</button>
+      </div>
+      ))}
+      <h2>Complete To-do-List</h2>
+      {this.state.completedTodo.map((todolist) => (
+      <div>
+      {(todolist.name)}
+      </div>
+      ))}
+      </div>
+      );
+    }
+  }
+
+  class Todo extends React.Component {
+  render() {
+    return (
+    <div className="Todo">
+      <form onSubmit={(event) =>
+        this.props.submit(event)}>
+        <input type="text" placeholder = "Write here..." value={this.props.name}
+        onChange={(event) =>
+        this.props.inputTodo(event.target.value)}></input>
+        <button className="button" type="submit" value="Submit">Add!!!</button>
+      </form>
+    </div>
+    );
+  }
+}
+  
+
+// ========================================
+
+ReactDOM.render(
+  <App />,
+  document.getElementById('root')
+);
+
+// to complete this assignment i got help from
+//documentation, stackflow, by searching on google and by watching few
+// videoes on you tube to make my concept more clear.
+  </script>
+  </body>
+</html>
